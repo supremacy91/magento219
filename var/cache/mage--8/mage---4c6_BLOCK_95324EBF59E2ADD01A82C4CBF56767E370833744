@@ -1,0 +1,6 @@
+a:4:{s:4:"hash";s:0:"";s:5:"mtime";i:1512053343;s:6:"expire";i:1512056943;s:4:"tags";s:67:"4c6_BLOCK_HTML,4c6_CATALOG_CATEGORY,4c6_CATALOG_CATEGORY_3,4c6_MAGE";}
+
+<nav class="navigation" data-action="navigation">
+    <ul data-mage-init='{"menu":{"responsive":true, "expanded":true, "position":{"my":"left top","at":"left bottom"}}}'>
+        <li  class="level0 nav-1 first last level-top"><a href="http://magento219.loc/testcategory.html"  class="level-top" ><span>TestCategory</span></a></li>            </ul>
+</nav>

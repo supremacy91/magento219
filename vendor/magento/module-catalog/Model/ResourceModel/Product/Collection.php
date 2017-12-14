@@ -1617,7 +1617,7 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Collection\Abstrac
     }
 
     /**
-     * Add attribute to sort order
+     * Add attribute     to sort order
      *
      * @param string $attribute
      * @param string $dir

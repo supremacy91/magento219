@@ -16,6 +16,7 @@ class Attribute extends AbstractFilter
      * @var \Magento\Framework\Filter\StripTags
      */
     private $tagFilter;
+    private $registry;
 
     /**
      * @param \Magento\Catalog\Model\Layer\Filter\ItemFactory $filterItemFactory
@@ -31,6 +32,8 @@ class Attribute extends AbstractFilter
         \Magento\Catalog\Model\Layer $layer,
         \Magento\Catalog\Model\Layer\Filter\Item\DataBuilder $itemDataBuilder,
         \Magento\Framework\Filter\StripTags $tagFilter,
+        \Magento\Catalog\Model\Session $catalogSession,
+        \Magento\Framework\Registry $registry,
         array $data = []
     ) {
         parent::__construct(
@@ -41,6 +44,8 @@ class Attribute extends AbstractFilter
             $data
         );
         $this->tagFilter = $tagFilter;
+        $this->catalogSession = $catalogSession;
+        $this->registry     = $registry;
     }
 
     /**
@@ -53,14 +58,59 @@ class Attribute extends AbstractFilter
     public function apply(\Magento\Framework\App\RequestInterface $request)
     {
         $attributeValue = $request->getParam($this->_requestVar);
+
         if (empty($attributeValue)) {
             return $this;
         }
+        $this->registry->register($this->_requestVar, $attributeValue);
+
+        /* $flag = 1;
+        $requestValues = array();
+        if($this->catalogSession->getData($this->_requestVar)){
+            $requestValues = $this->catalogSession->getData($this->_requestVar);
+            foreach ($requestValues as $key => $requestValue) {
+                if($requestValue == $attributeValue){
+                    unset($requestValues[$key]);
+                    $flag = 0;
+                }
+            }
+        }
+        if($flag) {
+            $requestValues[] = $attributeValue;
+        }
+        $this->catalogSession->setData($this->_requestVar, $requestValues);*/
+
+       // $this->catalogSession->clearStorage();
+
         $attribute = $this->getAttributeModel();
         /** @var \Magento\CatalogSearch\Model\ResourceModel\Fulltext\Collection $productCollection */
         $productCollection = $this->getLayer()
             ->getProductCollection();
-        $productCollection->addFieldToFilter($attribute->getAttributeCode(), $attributeValue);
+      //  $arrayForFilter = $this->catalogSession->getData($this->_requestVar);
+        $arrayForFilter = explode('_', $attributeValue);
+        if ($arrayForFilter) {
+            $productCollection->addFieldToFilter($attribute->getAttributeCode(),
+                [
+                    'in' => $arrayForFilter
+
+                ]);
+        }
+
+
+     //   $productCollection->addFieldToFilter($attribute->getAttributeCode(), $attributeValue);
+
+        /*$productCollection->addFieldToFilter($attribute->getAttributeCode(),
+            [
+                'in' => [11, 12]
+
+            ]);*/
+      /*  $productCollection->addAttributeToFilter(
+            [
+
+                ['attribute'=>$attribute->getAttributeCode(),'eq'=> 12],
+
+            ]);*/
+
         $label = $this->getOptionText($attributeValue);
         $this->getLayer()
             ->getState()
@@ -105,12 +155,12 @@ class Attribute extends AbstractFilter
                 ? (int)$optionsFacetedData[$value]['count']
                 : 0;
             // Check filter type
-            if (
-                $this->getAttributeIsFilterable($attribute) === static::ATTRIBUTE_OPTIONS_ONLY_WITH_RESULTS
-                && (!$this->isOptionReducesResults($count, $productSize) || $count === 0)
-            ) {
-                continue;
-            }
+               /* if (
+                    $this->getAttributeIsFilterable($attribute) === static::ATTRIBUTE_OPTIONS_ONLY_WITH_RESULTS
+                    && (!$this->isOptionReducesResults($count, $productSize) || $count === 0)
+                ) {
+                    continue;
+                }*/
             $this->itemDataBuilder->addItemData(
                 $this->tagFilter->filter($option['label']),
                 $value,
@@ -118,6 +168,6 @@ class Attribute extends AbstractFilter
             );
         }
 
-        return $this->itemDataBuilder->build();
+            return $this->itemDataBuilder->build();
     }
 }

@@ -14,12 +14,22 @@
  * @var $block \Magento\LayeredNavigation\Block\Navigation\FilterRenderer
  */
 ?>
-
+<?php
+$currUrl = $block->getUrl('*/*/*', ['_current' => true, '_use_rewrite' => true]);
+$checkboxCondition;
+//$filterItem->getFilter()->getRequestVar();
+?>
 <ol class="items">
     <?php foreach ($filterItems as $filterItem): ?>
         <li class="item">
             <?php if ($filterItem->getCount() > 0): ?>
                 <a href="<?php echo $block->escapeUrl($filterItem->getUrl()) ?>">
+                    <input style="cursor: pointer" type="checkbox" name="option4" value="a4" <?php echo $block->checkboxIndicator($filterItem)?>>
+                    <?php
+                    //$filterItem->getRegistry()->registry($filterItem->getFilter()->getRequestVar())
+                   // $filterItem->getFilter()->getRequestVar();
+                   // checkboxIndicator
+                    ?>
                     <?php /* @escapeNotVerified */ echo $filterItem->getLabel() ?>
                     <?php if ($this->helper('\Magento\Catalog\Helper\Data')->shouldDisplayProductCountOnLayer()): ?>
                         <span class="count"><?php /* @escapeNotVerified */ echo $filterItem->getCount()?><span class="filter-count-label">
@@ -27,11 +37,15 @@
                     <?php endif; ?>
                 </a>
             <?php else:?>
+
+            <a href="<?php echo $block->escapeUrl($filterItem->getUrl()) ?>">
+                <input style="cursor: pointer" type="checkbox" name="option4" value="a4" <?php echo $block->checkboxIndicator($filterItem)?>>
                 <?php /* @escapeNotVerified */ echo $filterItem->getLabel() ?>
                 <?php if ($this->helper('\Magento\Catalog\Helper\Data')->shouldDisplayProductCountOnLayer()): ?>
                     <span class="count"><?php /* @escapeNotVerified */ echo $filterItem->getCount()?><span class="filter-count-label">
                         <?php if ($filterItem->getCount() == 1):?><?php /* @escapeNotVerified */ echo __('item')?><?php else:?><?php /* @escapeNotVerified */ echo __('items') ?><?php endif;?></span></span>
                 <?php endif; ?>
+            </a>
             <?php endif; ?>
         </li>
     <?php endforeach ?>

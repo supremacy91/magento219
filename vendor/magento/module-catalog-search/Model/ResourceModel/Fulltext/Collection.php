@@ -92,6 +92,7 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
      * @var \Magento\Framework\Api\FilterBuilder
      */
     private $filterBuilder;
+    private $filterGroupBuilder;
 
     /**
      * @param \Magento\Framework\Data\Collection\EntityFactory $entityFactory
@@ -149,6 +150,7 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
         \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
         $searchRequestName = 'catalog_view_container',
         SearchResultFactory $searchResultFactory = null
+
     ) {
         $this->queryFactory = $catalogSearchData;
         if ($searchResultFactory === null) {
@@ -177,6 +179,7 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
             $groupManagement,
             $connection
         );
+
         $this->requestBuilder = $requestBuilder;
         $this->searchEngine = $searchEngine;
         $this->temporaryStorageFactory = $temporaryStorageFactory;
@@ -240,6 +243,14 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
         return $this->filterBuilder;
     }
 
+    private function getFilterGroupBuilder()
+    {
+        if ($this->filterGroupBuilder === null) {
+            $this->filterGroupBuilder = ObjectManager::getInstance()
+                ->get('\Magento\Framework\Api\Search\FilterGroupBuilder');
+        }
+        return $this->filterGroupBuilder;
+    }
     /**
      * @deprecated
      * @param \Magento\Framework\Api\FilterBuilder $object
@@ -262,13 +273,58 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
         if ($this->searchResult !== null) {
             throw new \RuntimeException('Illegal state');
         }
-
+        //$this->getFilterGroupBuilder();
         $this->getSearchCriteriaBuilder();
         $this->getFilterBuilder();
+        /*if ($condition == 11 || $condition == 12) {
+            $this->filterBuilder->setField($field);
+            $this->filterBuilder->setValue($condition);
+            $filter_group = $this->filterGroupBuilder->addFilter($this->filterBuilder->create());
+            $this->searchCriteriaBuilder->setFilterGroups([$filter_group]);
+        }
+        else*/
+
+
+        /*$flag = 0;
+        if ($condition == 11 || $condition == 12) {
+         //   $this->filterBuilder->setField($field);
+           // $this->filterBuilder->setValue($condition);
+            // $this->filterBuilder->setConditionType('eq');
+
+                $filters = $this->searchCriteriaBuilder->getFilterGroupBuilder()->getData()['filters'];
+
+
+             foreach ($filters as $filter) {
+                if ($filter->getField() == $condition) {
+
+                    if(!is_array($filter->getValue())){
+                        $filter->setValue($condition);
+                        $flag = 1;
+                        break;
+                    } else {
+                        $arrayValues = $filter->getValue();
+                        $arrayValues[] = $condition;
+                        $flag = 1;
+                        break;
+                    }
+
+                }
+            }
+            if(!$flag){
+                $this->filterBuilder->setField($field);
+                $this->filterBuilder->setValue($condition);
+            }
+            $this->searchCriteriaBuilder->addFilter($this->filterBuilder->create());
+
+        }*/
+
+
         if (!is_array($condition) || !in_array(key($condition), ['from', 'to'])) {
             $this->filterBuilder->setField($field);
             $this->filterBuilder->setValue($condition);
+           // $this->filterBuilder->setConditionType('eq');
             $this->searchCriteriaBuilder->addFilter($this->filterBuilder->create());
+
         } else {
             if (!empty($condition['from'])) {
                 $this->filterBuilder->setField("{$field}.from");

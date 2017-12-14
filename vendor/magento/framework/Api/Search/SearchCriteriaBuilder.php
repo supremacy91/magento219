@@ -40,6 +40,10 @@ class SearchCriteriaBuilder extends AbstractSimpleObjectBuilder
         $this->filterGroupBuilder = $filterGroupBuilder;
     }
 
+    public function getFilterGroupBuilder(){
+        return $this->filterGroupBuilder;
+    }
+
     /**
      * Builds the SearchCriteria Data Object
      *

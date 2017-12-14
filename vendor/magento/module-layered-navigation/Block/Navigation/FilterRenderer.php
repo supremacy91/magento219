@@ -24,4 +24,18 @@ class FilterRenderer extends Template implements FilterRendererInterface
         $this->assign('filterItems', []);
         return $html;
     }
+
+    public function checkboxIndicator($filterItem) {
+        $registerValues = $filterItem->getRegistry()->registry($filterItem->getFilter()->getRequestVar());
+        $registerValues = explode ('_', $registerValues);
+        foreach ($registerValues as $registerValue) {
+            if ($registerValue == $filterItem->getValue()){
+                return "checked";
+            }
+        }
+        return "";
+
+        // $filterItem->getFilter()->getRequestVar();
+    }
+
 }

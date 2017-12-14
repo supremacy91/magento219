@@ -36,4 +36,12 @@ HTML;
 $bootstrap = \Magento\Framework\App\Bootstrap::create(BP, $_SERVER);
 /** @var \Magento\Framework\App\Http $app */
 $app = $bootstrap->createApplication('Magento\Framework\App\Http');
-$bootstrap->run($app);
+    $bootstrap->run($app);
+
+/*$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$product = $objectManager->create('\Magento\Catalog\Model\Product');
+$coll = $product->getCollection();
+$coll->load();
+echo "fffff";
+echo "fffff";
+echo "fffff";*/

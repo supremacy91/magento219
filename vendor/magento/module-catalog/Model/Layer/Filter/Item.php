@@ -28,7 +28,7 @@ class Item extends \Magento\Framework\DataObject
      * @var \Magento\Theme\Block\Html\Pager
      */
     protected $_htmlPagerBlock;
-
+    private $registry;
     /**
      * Construct
      *
@@ -39,10 +39,12 @@ class Item extends \Magento\Framework\DataObject
     public function __construct(
         \Magento\Framework\UrlInterface $url,
         \Magento\Theme\Block\Html\Pager $htmlPagerBlock,
+        \Magento\Framework\Registry $registry,
         array $data = []
     ) {
         $this->_url = $url;
         $this->_htmlPagerBlock = $htmlPagerBlock;
+        $this->registry     = $registry;
         parent::__construct($data);
     }
 
@@ -70,12 +72,47 @@ class Item extends \Magento\Framework\DataObject
      */
     public function getUrl()
     {
-        $query = [
-            $this->getFilter()->getRequestVar() => $this->getValue(),
-            // exclude current page from urls
-            $this->_htmlPagerBlock->getPageVarName() => null,
-        ];
-        return $this->_url->getUrl('*/*/*', ['_current' => true, '_use_rewrite' => true, '_query' => $query]);
+        $registerValue = $this->registry->registry($this->getFilter()->getRequestVar());
+        $current_value = '';
+        $nextValue = $this->getValue()  ;
+        if (!$registerValue) {
+            $query = [
+                $this->getFilter()->getRequestVar() => $nextValue,
+                // exclude current page from urls
+                $this->_htmlPagerBlock->getPageVarName() => null,
+            ];
+            return $this->_url->getUrl('*/*/*', ['_current' => true, '_use_rewrite' => true, '_query' => $query]);
+        } else {
+
+
+            $flag = 1;
+            $registerValueArray = explode('_', $registerValue);
+            foreach ($registerValueArray as $key => $value){
+                if ($value == $nextValue) {
+                    unset($registerValueArray[$key]);
+                    $flag = 0;
+                }
+            }
+            $registerValue = implode('_', $registerValueArray);
+
+            if($flag) {
+                $registerValue = $registerValue . '_' . $nextValue;
+            }
+
+            if($registerValue) {
+                $query = [
+                    $this->getFilter()->getRequestVar() => $current_value . $registerValue,
+                    // exclude current page from urls
+                        $this->_htmlPagerBlock->getPageVarName() => null,
+                    ];
+                return $this->_url->getUrl('*/*/*', ['_current' => true, '_use_rewrite' => true, '_query' => $query]);
+            }
+
+            return $this->getRemoveUrl();
+
+        }
+
+
     }
 
     /**
@@ -136,5 +173,10 @@ class Item extends \Magento\Framework\DataObject
             return implode(',', $value);
         }
         return $value;
+    }
+
+    public function getRegistry()
+    {
+        return $this->registry;
     }
 }

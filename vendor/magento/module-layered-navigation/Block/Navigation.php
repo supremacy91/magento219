@@ -117,7 +117,7 @@ class Navigation extends \Magento\Framework\View\Element\Template
         return $this->getChildBlock('state')->getClearUrl();
     }
 
-    public function getScopeConfig(){
+   /* public function getScopeConfig(){
         return $this->_scopeConfig;
-    }
+    }*/
 }

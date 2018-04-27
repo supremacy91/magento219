@@ -1,0 +1,26 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="testbedCommandTutorialObjectPreference" xsi:type="object">Pulsestorm\TutorialObjectPreference\Command\Testbed</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Pulsestorm\TutorialObjectPreference\Model\Messenger">
+        <arguments>
+            <argument name="mhi" xsi:type="object">Pulsestorm\TutorialObjectPreference\Model\English</argument>
+        </arguments>
+    </type>
+
+    <preference
+            for="Pulsestorm\TutorialObjectPreference\Command\Class1"
+            type="Pulsestorm\TutorialObjectPreference\Command\Class2" />
+
+    <preference
+            for="Pulsestorm\TutorialObjectPreference\Model\MessageHolderInterface"
+            type="Pulsestorm\TutorialObjectPreference\Model\English" />
+
+    <preference
+            for="Pulsestorm\TutorialObjectPreference\Model\MessageHolderInterface"
+            type="Pulsestorm\TutorialObjectPreference\Model\Spanish" />
+</config>

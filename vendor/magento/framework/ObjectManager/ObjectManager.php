@@ -53,6 +53,7 @@ class ObjectManager implements \Magento\Framework\ObjectManagerInterface
      */
     public function create($type, array $arguments = [])
     {
+       // echo $type . "  :  create" . PHP_EOL;
         $type = ltrim($type, '\\');
         return $this->_factory->create($this->_config->getPreference($type), $arguments);
     }
@@ -65,6 +66,7 @@ class ObjectManager implements \Magento\Framework\ObjectManagerInterface
      */
     public function get($type)
     {
+        //echo $type . "  :  get" . PHP_EOL;
         $type = ltrim($type, '\\');
         $type = $this->_config->getPreference($type);
         if (!isset($this->_sharedInstances[$type])) {
